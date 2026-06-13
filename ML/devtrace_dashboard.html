@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Report Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --bg2: #12151f;
+    --bg3: #181b28;
+    --bg4: #1e2130;
+    --border: #252838;
+    --border2: #2e3248;
+    --text: #e2e4f0;
+    --text2: #8b90a8;
+    --text3: #555a72;
+    --accent: #7c6ef5;
+    --accent2: #6457e8;
+    --green: #22d3a0;
+    --red: #f43f5e;
+    --orange: #f97316;
+    --yellow: #eab308;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 13px; min-height: 100vh; }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 20px; height: 48px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+  .nav-logo-icon { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; }
+  .nav-repo { color: var(--text2); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+  .nav-spacer { flex: 1; }
+  .nav-btn { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border2); background: transparent; color: var(--text); cursor: pointer; font-size: 12px; font-family: inherit; transition: all .15s; }
+  .nav-btn:hover { background: var(--bg4); border-color: var(--accent); }
+
+  /* LAYOUT */
+  .page { max-width: 1500px; margin: 0 auto; padding: 0 20px 40px; }
+
+  /* RISK BANNER */
+  .risk-banner { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 20px 0 0; }
+  .risk-cell { background: var(--bg2); padding: 16px 20px; }
+  .risk-label { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); margin-bottom: 6px; }
+  .risk-value { font-weight: 700; font-size: 15px; }
+
+  /* SECTION LABEL */
+  .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--text3); margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+  /* CORE METRICS */
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .metric-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; position: relative; overflow: hidden; }
+  .metric-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .metric-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .metric-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; }
+  .tag-red { background: rgba(244,63,94,.15); color: var(--red); }
+  .tag-green { background: rgba(34,211,160,.12); color: var(--green); }
+  .tag-yellow { background: rgba(234,179,8,.12); color: var(--yellow); }
+  .metric-label { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+  .metric-value { font-size: 32px; font-weight: 800; line-height: 1; }
+  .val-green { color: var(--green); }
+  .val-red { color: var(--red); }
+  .val-cyan { color: var(--cyan); }
+  .val-yellow { color: var(--yellow); }
+
+  /* CHART CARD */
+  .chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .chart-title { font-weight: 700; font-size: 14px; margin-bottom: 16px; }
+
+  /* TWO-COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* INSIGHTS */
+  .insights-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .critical-badge { font-size: 11px; font-weight: 700; color: var(--red); background: rgba(244,63,94,.1); padding: 3px 10px; border-radius: 20px; }
+  .insight-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; position: relative; }
+  .insight-sev { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; letter-spacing: .08em; padding: 2px 7px; border-radius: 3px; margin-bottom: 8px; }
+  .sev-high { background: rgba(244,63,94,.2); color: var(--red); }
+  .insight-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .insight-desc { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+  .insight-file { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 8px; }
+
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .fw700 { font-weight: 700; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">YR</div>
+    Your Report
+  </div>
+  <span class="nav-repo" id="projectName">Your Project</span>
+  <div class="nav-spacer"></div>
+  <button class="nav-btn">📊 Dashboard</button>
+  <button class="nav-btn">↓ Export</button>
+</nav>
+
+<div class="page">
+
+  <!-- RISK BANNER -->
+  <div class="risk-banner">
+    <div class="risk-cell">
+      <div class="risk-label">Risk Outlook</div>
+      <div class="risk-value" id="riskOutlook">Analysis in progress...</div>
+    </div>
+    <div class="risk-cell">
+      <div class="risk-label">Primary Focus</div>
+      <div class="risk-value" id="primaryFocus">Code quality assessment</div>
+    </div>
+  </div>
+
+  <!-- CORE METRICS -->
+  <div class="section-label">Core Metrics</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <div class="metric-icon">👁</div>
+        <span class="metric-tag tag-green">Good</span>
+      </div>
+      <div class="metric-label">Quality Score</div>
+      <div class="metric-value val-green" id="qualityScoreValue">85</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <div class="metric-icon">⚠️</div>
+        <span class="metric-tag tag-red">Issues found</span>
+      </div>
+      <div class="metric-label">Security Risks</div>
+      <div class="metric-value val-red" id="securityRiskValue">3</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <div class="metric-icon">&lt;/&gt;</div>
+        <span class="metric-tag tag-green">Stable</span>
+      </div>
+      <div class="metric-label">Maintainability</div>
+      <div class="metric-value val-cyan" id="maintainabilityValue">A</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <div class="metric-icon">〜</div>
+        <span class="metric-tag tag-yellow">Medium</span>
+      </div>
+      <div class="metric-label">Est. Tech Debt</div>
+      <div class="metric-value val-yellow" id="techDebtValue">12h</div>
+    </div>
+  </div>
+
+  <!-- ANALYSIS -->
+  <div class="section-label">Analysis</div>
+  <div class="two-col">
+    <!-- FINDINGS -->
+    <div class="chart-card">
+      <div class="insights-header">
+        <div class="fw700" style="font-size:14px">Key Findings</div>
+        <span class="critical-badge" id="criticalBadge">3 critical items found</span>
+      </div>
+      <div id="insightsList">
+        <div class="insight-item">
+          <div class="insight-sev sev-high">HIGH · SECURITY</div>
+          <div class="insight-title">Potential SQL Injection</div>
+          <div class="insight-desc">User input used in database query without proper sanitization</div>
+          <div class="insight-file">
+            <span>← database.py:45</span>
+          </div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-sev sev-high">HIGH · SECURITY</div>
+          <div class="insight-title">Hardcoded Credentials</div>
+          <div class="insight-desc">API keys found in source code</div>
+          <div class="insight-file">
+            <span>← config.py:12</span>
+          </div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-sev sev-high">MEDIUM · QUALITY</div>
+          <div class="insight-title">Code Duplication</div>
+          <div class="insight-desc">Similar code blocks found in multiple files</div>
+          <div class="insight-file">
+            <span>← utils.py:78</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="chart-card">
+      <div class="chart-title">Analysis Summary</div>
+      <div style="padding:20px 0;">
+        <div style="margin-bottom:16px;">
+          <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Project Overview</div>
+          <div style="color:var(--text2);font-size:12px;line-height:1.5;">
+            Your project has been analyzed for code quality, security vulnerabilities, and maintainability.
+            The analysis found several areas for improvement, primarily focused on security hardening.
+          </div>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Recommendations</div>
+          <ul style="color:var(--text2);font-size:12px;line-height:1.6;margin:0;padding-left:16px;">
+            <li>Address the 3 high-priority security issues immediately</li>
+            <li>Consider adding input validation for all user data</li>
+            <li>Review and remove any hardcoded credentials</li>
+            <li>Add comprehensive error handling</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  // You can add JavaScript here to dynamically update the report data
+  // For example, fetch data from your analysis API and update the DOM elements
+
+  function updateMetrics(data) {
+    document.getElementById('qualityScoreValue').textContent = data.qualityScore || '85';
+    document.getElementById('securityRiskValue').textContent = data.securityRisks || '3';
+    document.getElementById('maintainabilityValue').textContent = data.maintainability || 'A';
+    document.getElementById('techDebtValue').textContent = data.techDebt || '12h';
+    document.getElementById('criticalBadge').textContent = `${data.criticalItems || 3} critical items found`;
+    document.getElementById('riskOutlook').textContent = data.riskOutlook || '3 critical issues identified';
+  }
+
+  // Example: Load data from a JSON file or API
+  // fetch('report-data.json')
+  //   .then(response => response.json())
+  //   .then(data => updateMetrics(data))
+  //   .catch(error => console.error('Error loading report data:', error));
+</script>
+
+</body>
+</html>

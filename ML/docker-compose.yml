@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  devtrace:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - devtrace_data:/data
+    environment:
+      - APP_ENV=production
+      # Uncomment and fill:
+      # - GITHUB_CLIENT_ID=your_client_id
+      # - GITHUB_CLIENT_SECRET=your_client_secret
+      # - ANTHROPIC_API_KEY=your_key
+      # - SLACK_WEBHOOK_URL=https://hooks.slack.com/...
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build: ../Backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - FRONTEND_URL=http://localhost:3000
+      - ML_API_URL=http://devtrace:8000/api/v1
+      # Add DB_URI, etc. as needed
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../Frontend
+      args:
+        VITE_API_URL: http://backend:5000
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+
+volumes:
+  devtrace_data:

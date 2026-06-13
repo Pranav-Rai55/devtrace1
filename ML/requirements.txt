@@ -1,0 +1,49 @@
+# ── Core ─────────────────────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+httpx==0.27.0
+python-multipart==0.0.9
+python-dotenv==1.0.1
+pydantic==2.7.1
+pydantic-settings==2.3.0
+websockets==12.0
+
+# ── Git & Static Analysis ─────────────────────────────────────────
+gitpython==3.1.43
+radon==6.0.1
+bandit==1.7.8
+chardet==5.2.0
+networkx==3.3
+
+# ── ML Analysis Engine ────────────────────────────────────────────
+# Enables all 7 ML models (Models 1-7). Highly recommended.
+# scikit-learn==1.5.0
+# numpy==1.26.4
+
+# ── Storage & Export ──────────────────────────────────────────────
+aiofiles==23.2.1
+cachetools==5.3.3
+reportlab==4.2.0
+
+# ── Notifications ─────────────────────────────────────────────────
+requests==2.32.3
+
+# ── Dev Utils ─────────────────────────────────────────────────────
+pygments==2.18.0
+
+# ── Optional: Deep Learning (uncomment to enable) ────────────────
+# Enables CodeBERT semantic embeddings — requires ~2 GB RAM.
+# Works on CPU (slow) or GPU (fast).
+# transformers==4.41.2
+# torch==2.3.0
+# sentence-transformers==3.0.0
+
+# ── Optional: AI Fix Generation via API ──────────────────────────
+# Uncomment one (or both) to enable real AI-generated code fixes.
+# anthropic==0.28.0
+# openai==1.35.0
+
+# ── Notes ─────────────────────────────────────────────────────────
+# For deeper JS/TS analysis:  npm install -g eslint
+# For PDF export:             pip install reportlab (already above)
+# For git blame:              git must be in PATH (standard)
